@@ -26,6 +26,28 @@ persist_with: lifepointdc_default_datagroup
 # Each joined view also needs to define a primary key.
 
 
-explore: lifepoint {}
+explore: lifepoint {
+  join: national_avg {
+    type: left_outer
+    relationship: many_to_one
+    sql_on: 1=1 ;;
+  }
 
-explore: national_avg {}
+  join: lp_facility_averages {
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${lifepoint.facility}= ${lp_facility_averages.facility} ;;
+  }
+
+  join: avg_cost_facility {
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${lifepoint.facility} = ${avg_cost_facility.facility} ;;
+  }
+
+  # join: lp_regional_averages {
+  #   type: left_outer
+  #   relationship: many_to_one
+  #   sql_on: ${lifepoint.region}=region ;;
+  # }
+}

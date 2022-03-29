@@ -161,6 +161,12 @@ view: lifepoint {
     sql: ${TABLE}.division ;;
   }
 
+  dimension: region {
+    view_label: "Location"
+    type: string
+    sql: ${TABLE}.region ;;
+  }
+
 #-----------------------------------------------#
   dimension: dv_patient_risk_score {
     label: "Readmission Risk Score"
@@ -517,10 +523,7 @@ view: lifepoint {
     sql: ${TABLE}.Referred_in_Network ;;
   }
 
-  dimension: region {
-    type: string
-    sql: ${TABLE}.region ;;
-  }
+
 
   dimension: risk_adjusted_ioh_score {
     type: number
@@ -606,11 +609,22 @@ view: lifepoint {
     drill_fields: [patient_details*]
   }
 
+  measure: readmit_rate {
+    view_label: "Care Variation"
+    group_label: "Readmittance"
+    type: average
+    sql: case when ${TABLE}.patient_readmit then 1 else 0 end ;;
+    value_format_name: percent_2
+  }
+
+
+
   #--------------------set---------------------------#
   set: patient_details {
     fields: [patient_id,
       patient_name,
-      patient_age
+      patient_age,
+      insurance_plan
       ]
   }
 
