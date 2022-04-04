@@ -1,7 +1,7 @@
 view: lp_national {
   view_label: "Comparators"
   derived_table: {
-    explore_source: joint_replacement {
+    explore_source: lp_demo {
       #column: average_number_of_gaps_in_care {}
       #column: total_number_of_gaps_in_care {}
       #column: average_access {}
