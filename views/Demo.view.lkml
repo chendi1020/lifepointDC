@@ -939,7 +939,7 @@ view: lp_demo {
     html: {{ rendered_value }}
           <br> </br>
           <br> Facility </br>
-          <br> {{ joint_replacement.facility._rendered_value }} </br>  ;;
+          <br> {{ lp_demo.facility._rendered_value }} </br>  ;;
   }
 
   measure: total_deaths {
