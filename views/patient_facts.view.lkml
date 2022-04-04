@@ -22,6 +22,7 @@ view: patient_facts {
     type: number
   }
   dimension:patient_comorbidity_group  {
+    view_label: "LifePoint Demo"
     group_label: "Patient"
     type: string
     sql: case when ${patient_comorbidity_count} >1 then "Multiple Comorbidities"

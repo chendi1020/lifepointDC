@@ -75,7 +75,7 @@ view: patient_comorbidity_facts {
   }
 
   dimension: comorbidity {
-    view_label: "Joint Replacement"
+    view_label: "LifePoint Demo"
 
     type: string
     sql: ${TABLE}.comorbidity ;;
@@ -92,14 +92,14 @@ view: patient_comorbidity_facts {
 ## ---------------------------- Measures ---------------------------- ##
 
   measure: number_of_patients {
-    view_label: "Joint Replacement"
+    view_label: "LifePoint Demo"
     group_label: "Comorbidity"
     drill_fields: [lp_demo.patient_details*]
     type: count
   }
 
   measure: total_cost {
-    view_label: "Joint Replacement"
+    view_label: "LifePoint Demo"
     group_label: "Comorbidity"
     drill_fields: [lp_demo.patient_details*]
     type: sum
@@ -108,7 +108,7 @@ view: patient_comorbidity_facts {
   }
 
   measure: average_cost_per_patient {
-    view_label: "Joint Replacement"
+    view_label: "LifePoint Demo"
     group_label: "Comorbidity"
     drill_fields: [lp_demo.patient_details*]
     type: number

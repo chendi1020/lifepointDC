@@ -119,6 +119,12 @@ view: lp_demo {
     type: string
     sql: ${TABLE}.facility ;;
     drill_fields: [attending_name]
+    link: {
+      label: "Care Variation - Facility View"
+      icon_url: "https://www.zilliondesigns.com/images/portfolio/healthcare-hospital/iStock-471629610-Converted.png"
+      url: "/dashboards/22?Region={{ _filters['lp_demo.region'] | url_encode }}&Procedure%2FCondition={{ _filters['lp_demo.procedure_condition'] | url_encode }}&Timeframe={{ _filters['lp_demo.procedure_year'] | url_encode }}&Payer+Group={{ _filters['lp_demo.insurance_plan'] | url_encode }}&Hospitals={{ value  | url_encode }}"
+    }
+
   }
 
   dimension: facility_latitude {
@@ -147,7 +153,7 @@ view: lp_demo {
     type: string
     sql: ${TABLE}.Insurance_Plan ;;
     link: {
-      label: "Care Variation - Hospital View"
+      label: "Care Variation - Facility View"
       icon_url: "https://www.zilliondesigns.com/images/portfolio/healthcare-hospital/iStock-471629610-Converted.png"
       url: "/dashboards/3?Region={{ _filters['lp_demo.region'] | url_encode }}&Procedure%2FCondition={{ _filters['lp_demo.procedure_condition'] | url_encode }}&Timeframe={{ _filters['lp_demo.procedure_year'] | url_encode }}&Payer+Group={{ value }}&Hospitals={{ _filters['lp_demo.facility'] | url_encode }}"
     }
@@ -389,6 +395,7 @@ view: lp_demo {
     view_label: "Location"
     type: string
     sql: ${TABLE}.region ;;
+    drill_fields: [facility, attending_npi]
   }
 
   dimension: state_code {
@@ -717,7 +724,7 @@ view: lp_demo {
     view_label: "Care Variation"
     type: average
     sql: case Post_Op_Pain_Management when 'Opioid' then 1 else 0 end ;;
-    value_format_name: decimal_2
+    value_format_name: percent_2
     drill_fields: [patient_details*]
   }
 
@@ -1396,6 +1403,15 @@ view: lp_demo {
     value_format_name: percent_2
   }
 
+  measure: rate_of_complications {
+    group_label: "Measures"
+    type: average
+    sql: case when ${number_of_complications}>0 then 1 else 0 end ;;
+    value_format_name: decimal_2
+    drill_fields: [variations_in_care_details*]
+
+  }
+
   parameter: cqi_metric_picker {
     description: "Use with the CQI Metric measure"
     view_label: "Clinical Quality Improvement"
@@ -1546,7 +1562,6 @@ view: lp_demo {
 
   parameter: condition_param {
     type: unquoted
-    label: "condition"
     allowed_value: {
       label: "Joint Replacement"
       value: "Joint_Replacement"
@@ -1560,6 +1575,7 @@ view: lp_demo {
 
   dimension: dynamic_title{
     type: string
+    label_from_parameter: measure_param
     sql: {% if measure_param._parameter_value == 'readmit_rate' %}
             "Facility Average Readmission Rate"
           {% elsif measure_param._parameter_value ==  'risk_adjusted_ioh_score' %}
