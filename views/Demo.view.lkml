@@ -1452,6 +1452,7 @@ view: lp_demo {
     view_label: "Clinical Quality Improvement"
     label_from_parameter: cqi_metric_picker
     value_format_name: percent_1
+    type: number
     sql: {% if cqi_metric_picker._parameter_value == 'diff_avg_home_health_pt' %}
             ${diff_avg_home_health_pt}
           {% elsif cqi_metric_picker._parameter_value == 'diff_avg_equipment_not_there' %}
@@ -1469,6 +1470,28 @@ view: lp_demo {
           {% endif %};;
   }
 
+  measure: cqi_metric_original_rate {
+    label: "CQI Metric Original Rate"
+    view_label: "Clinical Quality Improvement"
+    label_from_parameter: cqi_metric_picker
+    value_format_name: percent_1
+    sql: {% if cqi_metric_picker._parameter_value == 'diff_avg_home_health_pt' %}
+            ${avg_home_health_pt}
+          {% elsif cqi_metric_picker._parameter_value == 'diff_avg_equipment_not_there' %}
+            ${avg_equipment_not_there}
+          {% elsif cqi_metric_picker._parameter_value == 'diff_avg_waiting_for_pt_referral' %}
+            ${avg_waiting_for_pt_referral}
+          {% elsif cqi_metric_picker._parameter_value == 'diff_avg_tobacco_use_preop' %}
+            ${avg_tobacco_use_preop}
+          {% elsif cqi_metric_picker._parameter_value == 'diff_avg_chronic_disease_exacerbation' %}
+            ${avg_chronic_disease_exacerbation}
+          {% elsif cqi_metric_picker._parameter_value == 'diff_avg_orders_not_written' %}
+            ${avg_orders_not_written}
+          {% elsif cqi_metric_picker._parameter_value == 'diff_avg_rounds_not_done' %}
+            ${avg_rounds_not_done}
+          {% endif %};;
+  }
+
   dimension: intervention_target {
     view_label: "Clinical Quality Improvement"
     type: string
@@ -1478,6 +1501,7 @@ view: lp_demo {
   dimension_group: intervention_start {
     view_label: "Clinical Quality Improvement"
     type: time
+    datatype: date
     timeframes: [raw, date, week, month, month_name, year]
     sql: ${TABLE}.intervention_start_date ;;
   }
@@ -1485,6 +1509,7 @@ view: lp_demo {
   dimension_group: intervention_evaluation {
     view_label: "Clinical Quality Improvement"
     type: time
+    datatype: date
     timeframes: [raw, date, week, month, month_name, year]
     sql: ${TABLE}.intervention_evaluation_date ;;
   }
