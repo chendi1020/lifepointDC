@@ -120,9 +120,9 @@ view: lp_demo {
     sql: ${TABLE}.facility ;;
     drill_fields: [attending_name]
     link: {
-      label: "Care Variation - Facility View"
+      label: "Care Variation (Facility View)"
       icon_url: "https://www.zilliondesigns.com/images/portfolio/healthcare-hospital/iStock-471629610-Converted.png"
-      url: "/dashboards/22?Region={{ _filters['lp_demo.region'] | url_encode }}&Procedure%2FCondition={{ _filters['lp_demo.procedure_condition'] | url_encode }}&Timeframe={{ _filters['lp_demo.procedure_year'] | url_encode }}&Payer+Group={{ _filters['lp_demo.insurance_plan'] | url_encode }}&Hospitals={{ value  | url_encode }}"
+      url: "https://mathematica.cloud.looker.com/dashboards/22?Region={{ _filters['lp_demo.region'] | url_encode }}&Procedure%2FCondition={{ _filters['lp_demo.procedure_condition'] | url_encode }}&Timeframe={{ _filters['lp_demo.procedure_year'] | url_encode }}&Payer+Group={{ _filters['lp_demo.insurance_plan'] | url_encode }}&Hospitals={{ value  | url_encode }}"
     }
 
   }
@@ -1284,7 +1284,7 @@ view: lp_demo {
     view_label: "Clinical Quality Improvement"
     type: yesno
     sql: ${TABLE}.chronic_disease_exacerbation;;
-    hidden: yes
+
   }
 
   measure: avg_chronic_disease_exacerbation {
