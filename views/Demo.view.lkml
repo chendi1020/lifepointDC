@@ -924,6 +924,7 @@ view: lp_demo {
   measure: average_readmission_post_procedure {
     group_label: "Measures"
     type: average
+    label: "Readmission Rate"
     sql: CASE WHEN ${patient_readmit} THEN 1
          ELSE 0
          END ;;
@@ -969,6 +970,7 @@ view: lp_demo {
     group_label: "Measures"
     type: average
     sql: ${number_of_serious_complications} ;;
+    label: "Serious Complication Rate"
     value_format_name: decimal_2
     drill_fields: [variations_in_care_details*,average_rate_of_serious_complications]
     link: {
@@ -1067,6 +1069,7 @@ view: lp_demo {
     type: average
     sql: ${number_of_complications} ;;
     value_format_name: decimal_2
+    label: "Complication Rate"
     drill_fields: [patient_details*,average_rate_of_complications]
     link: {
       label: "Care Variation - Hospital View"
@@ -1412,6 +1415,26 @@ view: lp_demo {
 
   }
 
+  parameter: care_metric_picker {
+    description: "Use with care variation comparision"
+    view_label: "Care Variation"
+    label: "Care Metric Picker"
+    type: unquoted
+    allowed_value: {
+      label: "Rate of Complication"
+      value: "average_rate_of_complications"
+    }
+    allowed_value: {
+      label: "Rate of Readmission"
+      value: "average_readmission_post_procedure"
+    }
+    allowed_value: {
+      label: "Rate of serious complication"
+      value: "average_rate_of_serious_complications"
+    }
+  }
+
+
   parameter: cqi_metric_picker {
     description: "Use with the CQI Metric measure"
     view_label: "Clinical Quality Improvement"
@@ -1657,6 +1680,20 @@ view: lp_demo {
              APPROX_QUANTILES(${TABLE}.{% parameter measure_param %} , 100)[OFFSET(50)]
           {% endif %} ;;
 
+  }
+
+  measure: care_metric {
+    view_label: "Care Variation"
+    label_from_parameter: lp_demo.care_metric_picker
+    value_format_name: decimal_2
+    type: number
+    sql:  {% if lp_demo.care_metric_picker._parameter_value == 'average_rate_of_complications' %}
+            ${average_rate_of_complications}
+          {% elsif lp_demo.care_metric_picker._parameter_value == 'average_readmission_post_procedure' %}
+            ${average_readmission_post_procedure}
+          {% elsif lp_demo.care_metric_picker._parameter_value == 'average_rate_of_serious_complications' %}
+            ${average_rate_of_serious_complications}
+          {% endif %};;
   }
 
 

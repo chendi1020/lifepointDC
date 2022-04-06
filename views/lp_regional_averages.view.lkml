@@ -358,5 +358,21 @@ view: lp_regional_averages {
   }
 
 
+  measure: care_metric_regional {
+    view_label: "Care Variation"
+    label_from_parameter: lp_demo.care_metric_picker
+    value_format_name: decimal_2
+    type: number
+    sql:  {% if lp_demo.care_metric_picker._parameter_value == 'average_rate_of_complications' %}
+            ${average_rate_of_complications}
+          {% elsif lp_demo.care_metric_picker._parameter_value == 'average_readmission_post_procedure' %}
+            ${average_readmission_post_procedure}
+          {% elsif lp_demo.care_metric_picker._parameter_value == 'average_rate_of_serious_complications' %}
+            ${average_rate_of_serious_complications}
+          {% endif %};;
+  }
+
+
+
   set: detail {fields:[joint_replacement.facility]}
 }

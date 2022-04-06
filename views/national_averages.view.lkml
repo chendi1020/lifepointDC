@@ -115,4 +115,18 @@ view: national_averages {
     value_format_name: percent_2
   }
 
+  measure: care_metric_national {
+    view_label: "Care Variation"
+    label_from_parameter: lp_demo.care_metric_picker
+    value_format_name: decimal_2
+    type: number
+    sql:  {% if lp_demo.care_metric_picker._parameter_value == 'average_rate_of_complications' %}
+            ${national_average_rate_of_complication}
+          {% elsif lp_demo.care_metric_picker._parameter_value == 'average_readmission_post_procedure' %}
+            ${national_average_readmission_post_procedure}
+          {% elsif lp_demo.care_metric_picker._parameter_value == 'average_rate_of_serious_complications' %}
+            ${national_average_rate_of_serious_complications}
+          {% endif %};;
+  }
+
 }
