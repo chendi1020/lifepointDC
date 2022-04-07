@@ -1684,7 +1684,7 @@ view: lp_demo {
 
   measure: care_metric {
     view_label: "Care Variation"
-    label_from_parameter: lp_demo.care_metric_picker
+    label_from_parameter: care_metric_picker
     value_format_name: decimal_2
     type: number
     sql:  {% if lp_demo.care_metric_picker._parameter_value == 'average_rate_of_complications' %}
@@ -1694,6 +1694,7 @@ view: lp_demo {
           {% elsif lp_demo.care_metric_picker._parameter_value == 'average_rate_of_serious_complications' %}
             ${average_rate_of_serious_complications}
           {% endif %};;
+    drill_fields: [patient_details*, gaps_in_care_details*]
   }
 
 
