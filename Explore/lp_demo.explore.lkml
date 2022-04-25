@@ -3,6 +3,7 @@ include: "/views/**/*.view"
 
 explore: lp_demo {
   description: "Use this Explore to understand facts regarding pre-op conditions, the procedure, patients, and post-op complications"
+  label: "Demo"
 
   join: national_averages {
     type: left_outer

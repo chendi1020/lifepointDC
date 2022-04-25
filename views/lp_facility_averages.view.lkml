@@ -140,6 +140,7 @@ view: lp_facility_averages {
   dimension: readmit_rate {
     hidden: yes
     type: number
+    value_format_name: percent_2
   }
 
   dimension: avg_home_health_pt {
@@ -183,6 +184,7 @@ view: lp_facility_averages {
 
   measure: lp_facility_average_rate_of_complications {
     group_label: "LP Facility-Level"
+    label: "Hospital Average Rate of Complication"
     type: average
     sql: ${average_rate_of_complications} ;;
     value_format_name: decimal_2
@@ -345,6 +347,7 @@ view: lp_facility_averages {
     group_label: "Readmittance"
     type: min
     sql: ${readmit_rate};;
+    value_format_name: percent_2
   }
 
   measure: readmit_max {
@@ -352,6 +355,7 @@ view: lp_facility_averages {
     group_label: "Readmittance"
     type: max
     sql: ${readmit_rate};;
+    value_format_name: percent_2
   }
 
   ############CQI Update##############

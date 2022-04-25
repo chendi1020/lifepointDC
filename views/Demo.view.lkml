@@ -76,6 +76,7 @@ view: lp_demo {
 
   dimension: attending_npi {
     view_label: "Attending Physician"
+    label: "Attending Name"
     group_item_label: "NPI"
     type: number
     sql: ${TABLE}.Attending_NPI ;;
@@ -124,7 +125,13 @@ view: lp_demo {
       icon_url: "https://www.zilliondesigns.com/images/portfolio/healthcare-hospital/iStock-471629610-Converted.png"
       url: "https://mathematica.cloud.looker.com/dashboards/22?Region={{ _filters['lp_demo.region'] | url_encode }}&Procedure%2FCondition={{ _filters['lp_demo.procedure_condition'] | url_encode }}&Timeframe={{ _filters['lp_demo.procedure_year'] | url_encode }}&Payer+Group={{ _filters['lp_demo.insurance_plan'] | url_encode }}&Hospitals={{ value  | url_encode }}"
     }
+  }
 
+  dimension: facility_dup {
+    view_label: "Location"
+    label: "Selected Facility"
+    type:  string
+    sql: ${TABLE}.facility ;;
   }
 
   dimension: facility_latitude {
@@ -395,6 +402,21 @@ view: lp_demo {
     view_label: "Location"
     type: string
     sql: ${TABLE}.region ;;
+    drill_fields: [facility, attending_npi]
+  }
+
+  dimension: region_dup {
+    view_label: "Location"
+    label: "Selected Region"
+    type: string
+    sql: ${TABLE}.region ;;
+
+  }
+
+  dimension: readmit_region {
+    view_label: "Location"
+    type: string
+    sql: ${TABLE}.readmit_region ;;
     drill_fields: [facility, attending_npi]
   }
 
@@ -771,6 +793,15 @@ view: lp_demo {
     sql: ${patient_age} ;;
   }
 
+  dimension: patient_age_group2 {
+    view_label: "Patient"
+    label: "Patient Age Group"
+    type: tier
+    tiers: [21,31,41,45,51,55,61,65,71,75,81,85,91]
+    style: integer
+    sql: ${patient_age} ;;
+  }
+
   dimension: patient_risk_score_group {
     view_label: "Patient"
     group_item_label: "Readmission Risk Score Group"
@@ -1004,6 +1035,7 @@ view: lp_demo {
   measure: total_payment_cost {
     group_label: "Measures"
     group_item_label: "Total Payment/Cost"
+    label: "Total Payment/Cost"
     type: sum
     sql: ${cost} ;;
     value_format_name: usd
@@ -1012,6 +1044,7 @@ view: lp_demo {
 
   measure: average_cost {
     group_label: "Measures"
+    label: "Average Cost per Patient"
     type: average
     sql: ${cost} ;;
     value_format_name: usd
@@ -1028,7 +1061,7 @@ view: lp_demo {
     type: number
     sql: ${total_payment_cost}/${number_of_patients}  ;;
     value_format_name: usd
-    drill_fields: [patient_details*]
+    drill_fields: [attend_phys_set*]
   }
 
   measure: number_of_patients_with_gaps_in_care {
@@ -1094,7 +1127,7 @@ view: lp_demo {
 
   measure: average_patient_risk_score {
     group_label: "Measures"
-    label: "Average Patient Readmission Risk Score"
+    label: "Patient Readmission Risk Score"
     type: average
     sql: ${dv_patient_risk_score} ;;
     value_format_name: percent_2
@@ -1574,7 +1607,7 @@ view: lp_demo {
     fields: [patient_name
       , patient_age
       , insurance_plan
-      , total_high_risk_patients
+      ,average_patient_risk_score
       ,total_number_of_gaps_in_care
       ,total_complications
       , average_cost_per_patient]
@@ -1593,6 +1626,18 @@ view: lp_demo {
     fields: [region
       ,state_code
       ,facility]
+  }
+
+  set: attend_phys_set {
+    fields: [
+      attending_name,
+      total_high_risk_patients,
+      total_number_of_gaps_in_care,
+      total_complications,
+      average_cost,
+      total_payment_cost
+
+    ]
   }
 
   ##--------------parameter----------------------------##
@@ -1640,6 +1685,9 @@ view: lp_demo {
             ${TABLE}.{% parameter measure_param %}
           {% endif %} ;;
 
+    value_format:  "[>=1]0.##;[=0]0;0%"
+
+
   }
 
   measure: dynamic_max {
@@ -1649,6 +1697,12 @@ view: lp_demo {
           {% elsif measure_param._parameter_value ==  'risk_adjusted_ioh_score' %}
             ${TABLE}.{% parameter measure_param %}
           {% endif %} ;;
+    html:  {% if measure_param._parameter_value == 'readmit_rate' %}
+    {{ rendered_value | round: 2  | append: "%" }}
+    {% elsif measure_param._parameter_value ==  'risk_adjusted_ioh_score' %}
+    {{rendered_value}}
+    {% endif %};;
+    value_format:  "[>=1]0.##;[=0]0;0%"
 
   }
 
@@ -1660,6 +1714,9 @@ view: lp_demo {
              APPROX_QUANTILES(${TABLE}.{% parameter measure_param %} , 100)[OFFSET(25)]
           {% endif %} ;;
 
+
+    value_format:  "[>=1]0.##;[=0]0;0%"
+
   }
 
   measure: dynamic_third_quartile {
@@ -1669,6 +1726,12 @@ view: lp_demo {
           {% elsif measure_param._parameter_value ==  'risk_adjusted_ioh_score' %}
              APPROX_QUANTILES(${TABLE}.{% parameter measure_param %} , 100)[OFFSET(75)]
           {% endif %} ;;
+    html:{% if measure_param._parameter_value == 'readmit_rate' %}
+    {{ rendered_value | round: 2  | append: "%" }}
+    {% elsif measure_param._parameter_value ==  'risk_adjusted_ioh_score' %}
+    {{rendered_value}}
+    {% endif %};;
+    value_format:  "[>=1]0.##;[=0]0;0%"
 
   }
 
@@ -1679,6 +1742,12 @@ view: lp_demo {
           {% elsif measure_param._parameter_value ==  'risk_adjusted_ioh_score' %}
              APPROX_QUANTILES(${TABLE}.{% parameter measure_param %} , 100)[OFFSET(50)]
           {% endif %} ;;
+    html:{% if measure_param._parameter_value == 'readmit_rate' %}
+    {{ rendered_value | round: 2  | append: "%" }}
+    {% elsif measure_param._parameter_value ==  'risk_adjusted_ioh_score' %}
+    {{rendered_value}}
+    {% endif %};;
+    value_format:  "[>=1]0.##;[=0]0;0%"
 
   }
 
