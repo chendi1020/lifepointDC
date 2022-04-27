@@ -402,7 +402,7 @@ view: lp_demo {
     view_label: "Location"
     type: string
     sql: ${TABLE}.region ;;
-    drill_fields: [facility, attending_npi]
+    drill_fields: [facility, attending_name]
   }
 
   dimension: region_dup {
@@ -417,7 +417,7 @@ view: lp_demo {
     view_label: "Location"
     type: string
     sql: ${TABLE}.readmit_region ;;
-    drill_fields: [facility, attending_npi]
+    drill_fields: [facility, attending_name]
   }
 
   dimension: state_code {
@@ -764,8 +764,9 @@ view: lp_demo {
 ## ---------------------------- Derived Dimensions ---------------------------- ##
 
   dimension: attending_name {
-    view_label: "Attending Physician"
+    view_label: "Attending"
     group_item_label: "Full Name"
+    label: "Physician Full Name"
     type: string
     sql: ${attending_name_first}||" "||${attending_name_last}||", M.D." ;;
     drill_fields: [patient_name]
